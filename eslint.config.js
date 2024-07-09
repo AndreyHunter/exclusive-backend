@@ -27,7 +27,7 @@ export default [
         rules: {
             ...eslintConfigPrettier.rules,
 
-            'no-console': 'warn',
+            'no-console': 'off',
             'no-undef': 'error',
             'no-extra-semi': 'error',
             'no-empty': ['error', { allowEmptyCatch: true }],
