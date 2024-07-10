@@ -1,3 +1,3 @@
-import { handleErrors } from './handleErrors.js';
+import { handleErrors, CustomError } from './handleErrors.js';
 
-export { handleErrors };
+export { handleErrors, CustomError };

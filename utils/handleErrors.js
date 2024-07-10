@@ -9,3 +9,10 @@ export const handleErrors = (req, res, next) => {
 
     next();
 };
+
+export class CustomError extends Error {
+    constructor(statusCode, message) {
+        super(message);
+        this.statusCode = statusCode;
+    }
+}
