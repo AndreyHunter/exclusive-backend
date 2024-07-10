@@ -1,7 +1,3 @@
-import jwt from 'jsonwebtoken';
-import bcrypt from 'bcrypt';
-
-import { SECRET_KEY } from '../constants/index.js';
 import { signUpService, signInService } from '../services/userService.js';
 
 export const signup = async (req, res) => {
