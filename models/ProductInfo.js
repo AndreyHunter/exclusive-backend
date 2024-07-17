@@ -8,15 +8,15 @@ const ProductInfoSchema = new mongoose.Schema({
     },
     description: {
         type: String,
-        required: false,
+        default: '',
     },
     colors: {
         type: [String],
-        required: false,
+        default: [],
     },
     sizes: {
         type: [String],
-        required: false,
+        default: [],
     },
 });
 

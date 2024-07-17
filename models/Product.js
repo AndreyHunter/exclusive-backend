@@ -5,22 +5,25 @@ const ProductSchema = new mongoose.Schema(
         name: {
             type: String,
             required: true,
+            default: '',
         },
         price: {
             type: Number,
             required: true,
+            default: 0,
         },
         discountedPrice: {
             type: Number,
-            required: false,
+            default: null,
         },
         category: {
             type: String,
             required: true,
+            default: '',
         },
         inStock: {
             type: Boolean,
-            required: false,
+            default: true,
         },
         rating: {
             type: Number,
@@ -33,6 +36,7 @@ const ProductSchema = new mongoose.Schema(
         images: {
             type: [String],
             required: true,
+            default: [],
         },
     },
     {

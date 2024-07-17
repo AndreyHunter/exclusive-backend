@@ -8,7 +8,7 @@ import {
     AWS_SECRET_ACCESS_KEY,
     AWS_REGION,
     AWS_S3_BUCKET,
-} from './constants/config.js';
+} from './constants/index.js';
 
 const s3 = new S3Client({
     region: AWS_REGION,

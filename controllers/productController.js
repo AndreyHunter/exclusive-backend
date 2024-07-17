@@ -1,10 +1,12 @@
 import {
     createProductService,
+    addProductImagesService,
+    addReviewService,
+    getUserReviewsService,
     getProductsService,
     getProductService,
     updateProductService,
     deleteProductService,
-    addProductImagesService,
 } from '../services/productsService.js';
 
 export const createProduct = async (req, res) => {
@@ -27,8 +29,33 @@ export const addProductImages = async (req, res) => {
 
         res.json(product);
     } catch (err) {
-        console.error(err); 
+        console.error(err);
         res.status(err.statusCode || 500).json({ message: err.message });
+    }
+};
+
+export const addReview = async (req, res) => {
+    try {
+        const args = {
+            userId: req.user._id,
+            productId: req.body.productId,
+            rating: req.body.rating,
+            comment: req.body.comment,
+        };
+        const review = await addReviewService(args);
+
+        res.json({ message: 'Review successfully added', review });
+    } catch (err) {
+        res.status(err.statusCode || 500).json({ message: err.message });
+    }
+};
+
+export const getUserReviews = async (req, res) => {
+    try {
+        const reviews = await getUserReviewsService(req.params.id);
+        res.json(reviews);
+    } catch (err) {
+        res.status(err.StatusCode || 500).json({ message: err.message });
     }
 };
 

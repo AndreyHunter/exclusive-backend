@@ -1,3 +1,19 @@
-import { MONGO_URI, PORT, SECRET_KEY } from './config.js';
+import {
+    MONGO_URI,
+    PORT,
+    SECRET_KEY,
+    AWS_ACCESS_KEY,
+    AWS_SECRET_ACCESS_KEY,
+    AWS_REGION,
+    AWS_S3_BUCKET,
+} from './config.js';
 
-export { MONGO_URI, PORT, SECRET_KEY };
+export {
+    MONGO_URI,
+    PORT,
+    SECRET_KEY,
+    AWS_ACCESS_KEY,
+    AWS_SECRET_ACCESS_KEY,
+    AWS_REGION,
+    AWS_S3_BUCKET,
+};
