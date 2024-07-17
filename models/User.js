@@ -17,4 +17,4 @@ const UserSchema = new mongoose.Schema({
     },
 });
 
-export default mongoose.model('User', UserSchema, 'users', 'exclusive');
+export default mongoose.model('User', UserSchema);

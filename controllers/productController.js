@@ -4,6 +4,7 @@ import {
     getProductService,
     updateProductService,
     deleteProductService,
+    addProductImagesService,
 } from '../services/productsService.js';
 
 export const createProduct = async (req, res) => {
@@ -15,12 +16,28 @@ export const createProduct = async (req, res) => {
     }
 };
 
+export const addProductImages = async (req, res) => {
+    try {
+        if (!req.files || req.files.length === 0) {
+            return res.status(400).json({ message: 'No files uploaded' });
+        }
+
+        const imagesUrls = req.files.map((file) => file.location);
+        const product = await addProductImagesService(imagesUrls, req.params.id);
+
+        res.json(product);
+    } catch (err) {
+        console.error(err); 
+        res.status(err.statusCode || 500).json({ message: err.message });
+    }
+};
+
 export const getProducts = async (req, res) => {
     try {
         const products = await getProductsService();
         res.json({
             products,
-            amount: products.length,
+            quantity: products.length,
         });
     } catch (err) {
         res.status(err.statusCode || 500).json({ message: err.message });

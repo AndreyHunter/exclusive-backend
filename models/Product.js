@@ -30,10 +30,14 @@ const ProductSchema = new mongoose.Schema(
             type: Number,
             default: 0,
         },
+        images: {
+            type: [String],
+            required: true,
+        },
     },
     {
         timestamps: true,
     },
 );
 
-export default mongoose.model('Product', ProductSchema, 'products', 'exclusive');
+export default mongoose.model('Product', ProductSchema);

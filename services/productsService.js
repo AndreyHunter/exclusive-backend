@@ -3,14 +3,15 @@ import ProductInfoModel from '../models/ProductInfo.js';
 
 import { CustomError } from '../utils/index.js';
 
-export const createProductService = async (ProductData) => {
-    const product = ProductModel(ProductData);
+export const createProductService = async (productData) => {
+    const product = ProductModel(productData);
     const savedProduct = await product.save();
 
     const productInfo = new ProductInfoModel({
         productId: savedProduct._id,
-        description: ProductData.description,
-        // another info
+        description: productData.description,
+        sizes: productData.sizes,
+        colors: productData.colors,
     });
 
     await productInfo.save();
@@ -18,41 +19,36 @@ export const createProductService = async (ProductData) => {
     return savedProduct;
 };
 
-export const getProductsService = async () => {
-    const products = await ProductModel.find();
-
-    return products.map((product) => {
-        const { createdAt, updatedAt, __v, ...productData } = product.toObject();
-        return productData;
-    });
-};
-
-export const getProductService = async (productId) => {
+export const addProductImagesService = async (images, productId) => {
     const product = await ProductModel.findById(productId);
-    const productInfo = await ProductInfoModel.findOne({ productId });
 
     if (!product) {
         throw new CustomError(404, 'Product not found');
     }
 
-    const {
-        createdAt: productCreatedAt,
-        updatedAt: productUpdatedAt,
-        __v: productVersion,
-        ...productData
-    } = product.toObject();
+    product.images = images;
 
-    const {
-        createdAt: infoCreatedAt,
-        updatedAt: infoUpdatedAt,
-        productId: infoProductId,
-        __v: infoVersion,
-        ...productInfoData
-    } = productInfo ? productInfo.toObject() : {};
+    await product.save();
+
+    return product;
+};
+
+export const getProductsService = async () => {
+    const products = await ProductModel.find().select('-__v -createdAt -updatedAt');
+    return products;
+};
+
+export const getProductService = async (productId) => {
+    const product = await ProductModel.findById(productId).select('-__v -createdAt -updatedAt');
+    const productInfo = await ProductInfoModel.findOne({ productId }).select('-__v -productId');
+
+    if (!product) {
+        throw new CustomError(404, 'Product not found');
+    }
 
     return {
-        ...productData,
-        ...productInfoData,
+        ...product.toObject(),
+        ...productInfo.toObject(),
     };
 };
 
