@@ -1,15 +1,20 @@
 import express from 'express';
 import mongoose from 'mongoose';
+import cors from 'cors';
 
 import { MONGO_URI, PORT } from './constants/index.js';
 import userRoutes from './routes/userRoutes.js';
 import productRoutes from './routes/productRoutes.js';
+import cartRouters from './routes/cartRoutes.js';
 
 const app = express();
 
+app.use(cors());
 app.use(express.json());
-app.use('/auth', userRoutes);
-app.use('/', productRoutes);
+
+app.use(userRoutes);
+app.use(productRoutes);
+app.use(cartRouters);
 
 mongoose
     .connect(MONGO_URI)

@@ -7,7 +7,7 @@ import { handleErrors } from '../middlewares/index.js';
 
 const router = express.Router();
 
-router.post('/signup', signUpValidation, handleErrors, signup);
-router.post('/signin', signInValidation, handleErrors, signin);
+router.post('/auth/signup', signUpValidation, handleErrors, signup);
+router.post('/auth/signin', signInValidation, handleErrors, signin);
 
 export default router;
