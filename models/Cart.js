@@ -23,6 +23,7 @@ const CartSchema = new mongoose.Schema({
     },
     products: {
         type: [CartItemSchema],
+        default: [],
     },
 });
 

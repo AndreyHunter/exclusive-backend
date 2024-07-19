@@ -6,6 +6,7 @@ import { MONGO_URI, PORT } from './constants/index.js';
 import userRoutes from './routes/userRoutes.js';
 import productRoutes from './routes/productRoutes.js';
 import cartRouters from './routes/cartRoutes.js';
+import wishListRoutes from './routes/wishListRoutes.js';
 
 const app = express();
 
@@ -15,6 +16,7 @@ app.use(express.json());
 app.use(userRoutes);
 app.use(productRoutes);
 app.use(cartRouters);
+app.use(wishListRoutes);
 
 mongoose
     .connect(MONGO_URI)
