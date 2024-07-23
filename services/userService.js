@@ -6,8 +6,8 @@ import { CustomError } from '../utils/index.js';
 
 import UserModel from '../models/User.js';
 
-export const signUpService = async ({ name, email, password }) => {
-    const existingUser = await UserModel.findOne({ email });
+export const signUpService = async ({ name, contact, password }) => {
+    const existingUser = await UserModel.findOne({ contact });
 
     if (existingUser) {
         throw new CustomError(400, 'User with this email is already exist');
@@ -18,7 +18,7 @@ export const signUpService = async ({ name, email, password }) => {
 
     const doc = new UserModel({
         name,
-        email,
+        contact,
         password: hashedPassword,
     });
 
@@ -36,13 +36,13 @@ export const signUpService = async ({ name, email, password }) => {
 
     return {
         name: user.name,
-        email: user.email,
+        contact: user.contact,
         token,
     };
 };
 
-export const signInService = async ({ email, password }) => {
-    const user = await UserModel.findOne({ email });
+export const signInService = async ({ contact, password }) => {
+    const user = await UserModel.findOne({ contact });
 
     if (!user) {
         throw new CustomError(404, 'User not found');
@@ -66,7 +66,7 @@ export const signInService = async ({ email, password }) => {
 
     return {
         name: user.name,
-        email: user.email,
+        contact: user.contact,
         token,
     };
 };

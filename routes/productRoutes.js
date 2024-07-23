@@ -9,6 +9,9 @@ import {
     getProduct,
     updateProduct,
     deleteProduct,
+    getProductsByCategory,
+    getFlashSalesProducts,
+    getBestSellers,
 } from '../controllers/productController.js';
 
 import { productValidation, updateProductValidation } from '../validations/productValidation.js';
@@ -23,6 +26,11 @@ router.post('/products/images/:id', checkAuth, upload.array('images', 5), addPro
 router.post('/products/reviews', checkAuth, addReview);
 
 // Read
+router.get('/products/flash-sales', getFlashSalesProducts);
+router.get('/products/best-sellers', getBestSellers);
+
+router.get('/products/category/:category', getProductsByCategory);
+
 router.get('/products', getProducts);
 router.get('/products/:id', getProduct);
 router.get('/products/reviews/:id', getUserReviews);

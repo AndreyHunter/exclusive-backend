@@ -5,10 +5,14 @@ import {
     getUserReviewsService,
     getProductsService,
     getProductService,
+    getProductsByCategoryService,
+    getFlashSalesProductsService,
     updateProductService,
     deleteProductService,
+    getBestSellersService,
 } from '../services/productsService.js';
 
+// Create
 export const createProduct = async (req, res) => {
     try {
         const product = await createProductService(req.body);
@@ -50,18 +54,11 @@ export const addReview = async (req, res) => {
     }
 };
 
-export const getUserReviews = async (req, res) => {
-    try {
-        const reviews = await getUserReviewsService(req.params.id);
-        res.json(reviews);
-    } catch (err) {
-        res.status(err.StatusCode || 500).json({ message: err.message });
-    }
-};
-
+// Read
 export const getProducts = async (req, res) => {
     try {
-        const products = await getProductsService();
+        const { limit, sort } = req.query;
+        const products = await getProductsService({ limit, sort });
         res.json({
             products,
             quantity: products.length,
@@ -80,6 +77,56 @@ export const getProduct = async (req, res) => {
     }
 };
 
+export const getProductsByCategory = async (req, res) => {
+    try {
+        const { limit, sort } = req.query;
+        const { category } = req.params;
+
+        const products = await getProductsByCategoryService({
+            category,
+            limit,
+            sort,
+        });
+
+        res.json({ products, quantity: products.length });
+    } catch (err) {
+        res.status(err.statusCode || 500).json({ message: err.message });
+    }
+};
+
+export const getFlashSalesProducts = async (req, res) => {
+    try {
+        const { limit, sort } = req.query;
+        console.log(limit, sort);
+        const products = await getFlashSalesProductsService({ limit, sort });
+
+        res.json({ products, quantity: products.length });
+    } catch (err) {
+        res.status(err.statusCode || 500).json({ message: err.message });
+    }
+};
+
+export const getBestSellers = async (req, res) => {
+    try {
+        const { limit, sort } = req.query;
+        const products = await getBestSellersService({ limit, sort });
+
+        res.json({ products, quantity: products.length });
+    } catch (err) {
+        res.status(err.statusCode || 500).json({ message: err.message });
+    }
+};
+
+export const getUserReviews = async (req, res) => {
+    try {
+        const reviews = await getUserReviewsService(req.params.id);
+        res.json(reviews);
+    } catch (err) {
+        res.status(err.statusCode || 500).json({ message: err.message });
+    }
+};
+
+// Update
 export const updateProduct = async (req, res) => {
     try {
         const product = await updateProductService(req.params.id, req.body);
@@ -89,6 +136,7 @@ export const updateProduct = async (req, res) => {
     }
 };
 
+// Delete
 export const deleteProduct = async (req, res) => {
     try {
         const product = await deleteProductService(req.params.id);

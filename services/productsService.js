@@ -4,6 +4,7 @@ import ReviewModel from '../models/Review.js';
 
 import { CustomError } from '../utils/index.js';
 
+// Create
 export const createProductService = async (productData) => {
     const product = ProductModel(productData);
     const savedProduct = await product.save();
@@ -63,13 +64,19 @@ export const addReviewService = async ({ productId, userId, rating, comment }) =
     return review;
 };
 
-export const getUserReviewsService = async (userId) => {
-    const reviews = await ReviewModel.find({ userId });
-    return reviews;
-};
+// Read
+export const getProductsService = async ({ limit = 20, sort = '' }) => {
+    const query = ProductModel.find().select('-__v -createdAt -updatedAt');
 
-export const getProductsService = async () => {
-    const products = await ProductModel.find().select('-__v -createdAt -updatedAt');
+    if (sort) {
+        const [field, order] = sort.split(':');
+        query.sort({ [field]: Number(order) });
+    }
+
+    if (limit) query.limit(Number(limit));
+
+    const products = await query;
+
     return products;
 };
 
@@ -87,6 +94,73 @@ export const getProductService = async (productId) => {
     };
 };
 
+export const getProductsByCategoryService = async ({ category, limit = 20, sort = '' }) => {
+    const query = ProductModel.find({ category }).select('-__v -createdAt -updatedAt');
+
+    if (sort) {
+        const [field, order] = sort.split(':');
+        query.sort({ [field]: Number(order) });
+    }
+
+    if (limit) query.limit(Number(limit));
+
+    const products = await query;
+
+    if (!products.length) {
+        throw new CustomError(404, 'Category not found or no products in this category');
+    }
+
+    return products;
+};
+
+export const getFlashSalesProductsService = async ({ limit = 20, sort = '' }) => {
+    const query = ProductModel.find({ discountedPrice: { $ne: null } }).select(
+        '-__v -createdAt -updatedAt',
+    );
+
+    if (sort) {
+        const [field, order] = sort.split(':');
+        query.sort({ [field]: Number(order) });
+    }
+
+    if (limit) query.limit(Number(limit));
+
+    const products = await query;
+
+    if (!products.length) {
+        throw new CustomError(404, 'Products not found');
+    }
+
+    return products;
+};
+
+export const getBestSellersService = async ({ limit = 20, sort = '' }) => {
+    const query = ProductModel.find()
+        .sort({ reviewsCount: -1 })
+        .select('-__v -createdAt -updatedAt');
+
+    if (sort) {
+        const [field, order] = sort.split(':');
+        query.sort({ [field]: Number(order) });
+    }
+
+    if (limit) query.limit(Number(limit));
+
+    const products = await query;
+
+    if (!products.length) {
+        throw new CustomError(404, 'Products not found');
+    }
+
+    return products;
+};
+
+export const getUserReviewsService = async (userId) => {
+    const reviews = await ReviewModel.find({ userId });
+    return reviews;
+};
+
+// Update
 export const updateProductService = async (productId, updatedData) => {
     const product = await ProductModel.findByIdAndUpdate(productId, updatedData, { new: true });
     const productInfo = await ProductInfoModel.findOneAndUpdate({ productId }, updatedData, {
@@ -103,6 +177,7 @@ export const updateProductService = async (productId, updatedData) => {
     };
 };
 
+// Delete
 export const deleteProductService = async (productId) => {
     const product = await ProductModel.findByIdAndDelete(productId);
     await ProductInfoModel.findOneAndDelete({ productId });
