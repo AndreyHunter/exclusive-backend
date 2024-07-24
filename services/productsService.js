@@ -94,8 +94,10 @@ export const getProductService = async (productId) => {
     };
 };
 
-export const getProductsByCategoryService = async ({ category, limit = 20, sort = '' }) => {
-    const query = ProductModel.find({ category }).select('-__v -createdAt -updatedAt');
+export const getProductsByCategoryService = async ({ categoryPath, limit = 20, sort = '' }) => {
+    const query = ProductModel.find({ category: new RegExp(`^${categoryPath}`) }).select(
+        '-__v -createdAt -updatedAt',
+    );
 
     if (sort) {
         const [field, order] = sort.split(':');

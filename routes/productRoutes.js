@@ -29,7 +29,7 @@ router.post('/products/reviews', checkAuth, addReview);
 router.get('/products/flash-sales', getFlashSalesProducts);
 router.get('/products/best-sellers', getBestSellers);
 
-router.get('/products/category/:category', getProductsByCategory);
+router.get('/products/category/*', getProductsByCategory);
 
 router.get('/products', getProducts);
 router.get('/products/:id', getProduct);

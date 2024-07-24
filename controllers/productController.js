@@ -80,10 +80,10 @@ export const getProduct = async (req, res) => {
 export const getProductsByCategory = async (req, res) => {
     try {
         const { limit, sort } = req.query;
-        const { category } = req.params;
+        const categoryPath = req.params[0];
 
         const products = await getProductsByCategoryService({
-            category,
+            categoryPath,
             limit,
             sort,
         });
@@ -97,7 +97,6 @@ export const getProductsByCategory = async (req, res) => {
 export const getFlashSalesProducts = async (req, res) => {
     try {
         const { limit, sort } = req.query;
-        console.log(limit, sort);
         const products = await getFlashSalesProductsService({ limit, sort });
 
         res.json({ products, quantity: products.length });
