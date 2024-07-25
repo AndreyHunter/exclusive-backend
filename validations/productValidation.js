@@ -30,6 +30,14 @@ export const productValidation = [
         .isInt({ min: 0 })
         .withMessage('Reviews count must be a non-negative integer'),
     body('description').optional().isString().withMessage('Description must be a string'),
+    body('characteristicsList')
+        .optional()
+        .isArray()
+        .withMessage('CharacteristicsList must be an array of strings')
+        .custom((characteristic) =>
+            characteristic.every((characteristic) => typeof characteristic === 'string'),
+        )
+        .withMessage('Each characteristic must be a string'),
     body('colors')
         .optional()
         .isArray()
@@ -62,6 +70,14 @@ export const updateProductValidation = [
         .isInt({ min: 0 })
         .withMessage('Reviews count must be a non-negative integer'),
     body('description').optional().isString().withMessage('Description must be a string'),
+    body('characteristicsList')
+        .optional()
+        .isArray()
+        .withMessage('CharacteristicsList must be an array of strings')
+        .custom((characteristic) =>
+            characteristic.every((characteristic) => typeof characteristic === 'string'),
+        )
+        .withMessage('Each characteristic must be a string'),
     body('colors')
         .optional()
         .isArray()

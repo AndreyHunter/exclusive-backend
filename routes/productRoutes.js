@@ -22,7 +22,7 @@ const router = express.Router();
 
 // Create
 router.post('/products', checkAuth, productValidation, handleErrors, createProduct);
-router.post('/products/images/:id', checkAuth, upload.array('images', 5), addProductImages);
+router.post('/products/images/:id', checkAuth, upload.array('images', 10), addProductImages);
 router.post('/products/reviews', checkAuth, addReview);
 
 // Read
@@ -37,7 +37,7 @@ router.get('/products/reviews/:id', getUserReviews);
 
 // Update
 router.patch('/products/:id', checkAuth, updateProductValidation, handleErrors, updateProduct);
-router.patch('/products/images/:id', checkAuth, upload.array('images', 5), addProductImages);
+router.patch('/products/images/:id', checkAuth, upload.array('images', 10), addProductImages);
 
 // Delete
 router.delete('/products/:id', checkAuth, deleteProduct);

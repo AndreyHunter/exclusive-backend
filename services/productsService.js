@@ -11,9 +11,7 @@ export const createProductService = async (productData) => {
 
     const productInfo = new ProductInfoModel({
         productId: savedProduct._id,
-        description: productData.description,
-        sizes: productData.sizes,
-        colors: productData.colors,
+        ...productData,
     });
 
     await productInfo.save();
