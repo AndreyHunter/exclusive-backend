@@ -1,6 +1,6 @@
 import jwt from 'jsonwebtoken';
 
-import { SECRET_KEY } from '../constants/index.js';
+import { Config } from '../constants/index.js';
 import { CustomError } from '../utils/index.js';
 
 import UserModel from '../models/User.js';
@@ -15,7 +15,7 @@ const checkAuth = async (req, res, next) => {
 
         const token = authHeader.replace('Bearer ', '');
 
-        const decoded = jwt.verify(token, SECRET_KEY);
+        const decoded = jwt.verify(token, Config.SECRET_KEY);
         const user = await UserModel.findById(decoded._id);
 
         if (!user) {

@@ -10,6 +10,10 @@ const ProductInfoSchema = new mongoose.Schema({
         type: String,
         default: '',
     },
+    additionalDescription: {
+        type: String,
+        default: '',
+    },
     characteristicsList: {
         type: [String],
         default: [],

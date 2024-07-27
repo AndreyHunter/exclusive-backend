@@ -30,6 +30,10 @@ export const productValidation = [
         .isInt({ min: 0 })
         .withMessage('Reviews count must be a non-negative integer'),
     body('description').optional().isString().withMessage('Description must be a string'),
+    body('additionalDescription')
+        .optional()
+        .isString()
+        .withMessage('additionalDescription must be a string'),
     body('characteristicsList')
         .optional()
         .isArray()
@@ -70,6 +74,10 @@ export const updateProductValidation = [
         .isInt({ min: 0 })
         .withMessage('Reviews count must be a non-negative integer'),
     body('description').optional().isString().withMessage('Description must be a string'),
+    body('additionalDescription')
+        .optional()
+        .isString()
+        .withMessage('additionalDescription must be a string'),
     body('characteristicsList')
         .optional()
         .isArray()
@@ -90,4 +98,12 @@ export const updateProductValidation = [
         .withMessage('Sizes must be an array of strings')
         .custom((sizes) => sizes.every((size) => typeof size === 'string'))
         .withMessage('Each size must be a string'),
+];
+
+export const addToCartValidation = [
+    body('productId')
+        .notEmpty()
+        .withMessage('productId is required')
+        .isString()
+        .withMessage('productId must be a string'),
 ];

@@ -1,7 +1,7 @@
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
 
-import { SECRET_KEY } from '../constants/index.js';
+import { Config } from '../constants/index.js';
 import { CustomError } from '../utils/index.js';
 
 import UserModel from '../models/User.js';
@@ -28,13 +28,14 @@ export const signUpService = async ({ name, contact, password }) => {
         {
             _id: user._id,
         },
-        SECRET_KEY,
+        Config.SECRET_KEY,
         {
             expiresIn: '30d',
         },
     );
 
     return {
+        _id: user._id,
         name: user.name,
         contact: user.contact,
         token,
@@ -58,13 +59,14 @@ export const signInService = async ({ contact, password }) => {
         {
             _id: user._id,
         },
-        SECRET_KEY,
+        Config.SECRET_KEY,
         {
             expiresIn: '30d',
         },
     );
 
     return {
+        _id: user._id,
         name: user.name,
         contact: user.contact,
         token,

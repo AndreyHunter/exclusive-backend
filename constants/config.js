@@ -5,6 +5,7 @@ dotenv.config();
 const MONGO_URI = process.env.MONGO_URI;
 const PORT = process.env.PORT;
 const SECRET_KEY = process.env.SECRET_KEY;
+const SESSION_ID = process.env.SESSION_ID;
 
 // AWS
 const AWS_ACCESS_KEY = process.env.AWS_ACCESS_KEY;
@@ -16,6 +17,7 @@ export {
     MONGO_URI,
     PORT,
     SECRET_KEY,
+    SESSION_ID,
     AWS_ACCESS_KEY,
     AWS_SECRET_ACCESS_KEY,
     AWS_REGION,
