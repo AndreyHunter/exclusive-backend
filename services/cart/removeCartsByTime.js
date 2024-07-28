@@ -12,7 +12,6 @@ const removeCartsByTime = async () => {
             createdAt: { $lt: expirationDate },
         });
 
-        console.log('Expired carts removed successfully');
     } catch (err) {
         console.error('Error removing expired carts:', err);
     }
