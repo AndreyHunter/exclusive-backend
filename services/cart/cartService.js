@@ -85,3 +85,56 @@ export const getUserCartIdsService = async ({ sessionId, userId }) => {
 
     return cart.products;
 };
+
+export const updateUserCartItemsQuantityService = async ({ sessionId, userId, products }) => {
+    let cart;
+
+    if (userId) {
+        cart = await CartModel.findOne({ userId });
+    } else if (sessionId) {
+        cart = await CartModel.findOne({ sessionId });
+    }
+
+    if (!cart) {
+        throw new CustomError(404, 'Cart was"nt found');
+    }
+
+    cart.products = products.map((product) => ({
+        productId: product.productId,
+        quantity: product.quantity,
+    }));
+
+    await cart.populate('products.productId');
+    await cart.save();
+
+    if (!cart) {
+        throw new CustomError(400, 'Cart was"nt update');
+    }
+
+    return cart.products;
+};
+
+export const deleteProductFromCartService = async ({ sessionId, userId, productId }) => {
+    let cart;
+
+    if (userId) {
+        cart = await CartModel.findOne({ userId });
+    } else if (sessionId) {
+        cart = await CartModel.findOne({ sessionId });
+    }
+
+    if (!cart) {
+        throw new CustomError(404, 'Cart was"nt found');
+    }
+
+    cart.products = cart.products.filter((product) => product.productId.toString() !== productId);
+
+    await cart.populate('products.productId');
+    await cart.save();
+
+    if (!cart) {
+        throw new CustomError(400, 'Product was"nt delete');
+    }
+
+    return cart.products;
+};

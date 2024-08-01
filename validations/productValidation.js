@@ -100,10 +100,19 @@ export const updateProductValidation = [
         .withMessage('Each size must be a string'),
 ];
 
-export const addToCartValidation = [
+export const cartIdValidation = [
     body('productId')
         .notEmpty()
         .withMessage('productId is required')
         .isString()
         .withMessage('productId must be a string'),
 ];
+
+export const updateCartItemsQuantityValidation = [
+    body('products')
+        .notEmpty()
+        .withMessage('products is required')
+        .isArray()
+        .withMessage('products must be an array of objects'),
+];
+
