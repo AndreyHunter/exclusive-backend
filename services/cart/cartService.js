@@ -50,25 +50,7 @@ export const updateCartAfterAuthService = async (sessionId, userId) => {
     }
 };
 
-export const getUserCartService = async ({ sessionId, userId }) => {
-    let cart;
-
-    if (userId) {
-        cart = await CartModel.findOne({ userId }).populate('products.productId');
-    } else if (sessionId) {
-        cart = await CartModel.findOne({ sessionId }).populate('products.productId');
-    } else {
-        throw new CustomError(400, 'Either userId or sessionId must be provided');
-    }
-
-    if (!cart) {
-        return [];
-    }
-
-    return cart.products;
-};
-
-export const getUserCartIdsService = async ({ sessionId, userId }) => {
+export const getUserCartService = async ({ sessionId, userId, details = false }) => {
     let cart;
 
     if (userId) {
@@ -81,6 +63,10 @@ export const getUserCartIdsService = async ({ sessionId, userId }) => {
 
     if (!cart) {
         return [];
+    }
+
+    if (details) {
+        await cart.populate('products.productId');
     }
 
     return cart.products;
