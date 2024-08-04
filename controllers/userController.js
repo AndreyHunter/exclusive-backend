@@ -1,12 +1,12 @@
-import { signUpService, signInService } from '../services/userService.js';
-import { updateCartAfterAuthService } from '../services/cart/cartService.js';
+import { UserService } from '../services/index.js';
+import { CartService } from '../services/index.js';
 
 export const signup = async (req, res) => {
     try {
-        const user = await signUpService(req.body);
+        const user = await UserService.signUp(req.body);
 
         const sessionId = req.cookies.sessionId;
-        const cart = await updateCartAfterAuthService({
+        const cart = await CartService.updateCartAfterAuth({
             sessionId,
             userId: user._id,
         });
@@ -19,10 +19,10 @@ export const signup = async (req, res) => {
 
 export const signin = async (req, res) => {
     try {
-        const user = await signInService(req.body);
+        const user = await UserService.signIn(req.body);
 
         const sessionId = req.cookies.sessionId;
-        const cart = await updateCartAfterAuthService({
+        const cart = await CartService.updateCartAfterAuth({
             sessionId,
             userId: user._id,
         });

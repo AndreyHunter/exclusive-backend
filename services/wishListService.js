@@ -1,8 +1,8 @@
 import WishListModel from '../models/WishList.js';
 
-import { CustomError } from '../utils/index.js';
+import { HttpError } from '../utils/index.js';
 
-export const addToWishListService = async ({ userId, productId }) => {
+export const addToWishList = async ({ userId, productId }) => {
     let wishList = await WishListModel.findOne({ userId });
 
     if (!wishList) {
@@ -18,7 +18,7 @@ export const addToWishListService = async ({ userId, productId }) => {
         );
 
         if (!updatedWishList) {
-            throw new CustomError(400, 'Failed to add product to wish list');
+            throw new HttpError(400, 'Failed to add product to wish list');
         }
 
         return updatedWishList;
@@ -27,18 +27,20 @@ export const addToWishListService = async ({ userId, productId }) => {
     const savedWishList = await wishList.save();
 
     if (!savedWishList) {
-        throw new CustomError(400, 'Failed to add product to wish list');
+        throw new HttpError(400, 'Failed to add product to wish list');
     }
 
     return savedWishList;
 };
 
-export const getUserWishListService = async (userId) => {
+export const getUserWishList = async (userId) => {
     const wishList = await WishListModel.findOne({ userId })
         .select('-__v')
         .populate('products.productId');
+
     if (!wishList) {
-        throw new CustomError(404, 'Product not found');
+        throw new HttpError(404, 'WishList not found');
     }
+
     return wishList;
 };

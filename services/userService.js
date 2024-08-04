@@ -2,15 +2,15 @@ import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
 
 import { Config } from '../constants/index.js';
-import { CustomError } from '../utils/index.js';
+import { HttpError } from '../utils/index.js';
 
 import UserModel from '../models/User.js';
 
-export const signUpService = async ({ name, contact, password }) => {
+export const signUp = async ({ name, contact, password }) => {
     const existingUser = await UserModel.findOne({ contact });
 
     if (existingUser) {
-        throw new CustomError(400, 'User with this email is already exist');
+        throw new HttpError(400, 'User with this email is already exist');
     }
 
     const salt = await bcrypt.genSalt(10);
@@ -42,17 +42,17 @@ export const signUpService = async ({ name, contact, password }) => {
     };
 };
 
-export const signInService = async ({ contact, password }) => {
+export const signIn = async ({ contact, password }) => {
     const user = await UserModel.findOne({ contact });
 
     if (!user) {
-        throw new CustomError(404, 'User not found');
+        throw new HttpError(404, 'User not found');
     }
 
     const matchPassword = await bcrypt.compare(password, user.password);
 
     if (!matchPassword) {
-        throw new CustomError(400, 'Password error');
+        throw new HttpError(400, 'Password error');
     }
 
     const token = jwt.sign(

@@ -1,8 +1,8 @@
-import { addToWishListService, getUserWishListService } from '../services/wishListService.js';
+import { WishListService } from '../services/index.js';
 
 export const addToWishList = async (req, res) => {
     try {
-        const wishList = await addToWishListService(req.body);
+        const wishList = await WishListService.addToWishList(req.body);
         res.json({ message: 'Product successfully added to wishlist', wishList });
     } catch (err) {
         res.status(err.statusCode || 500).json({ message: err.message });
@@ -11,10 +11,9 @@ export const addToWishList = async (req, res) => {
 
 export const getUserWishList = async (req, res) => {
     try {
-        const wishList = await getUserWishListService(req.params.userId);
+        const wishList = await WishListService.getUserWishList(req.params.userId);
         res.json(wishList);
     } catch (err) {
         res.status(err.statusCode || 500).json({ message: err.message });
     }
 };
-

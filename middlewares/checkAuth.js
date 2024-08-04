@@ -1,7 +1,7 @@
 import jwt from 'jsonwebtoken';
 
 import { Config } from '../constants/index.js';
-import { CustomError } from '../utils/index.js';
+import { HttpError } from '../utils/index.js';
 
 import UserModel from '../models/User.js';
 
@@ -10,7 +10,7 @@ const checkAuth = async (req, res, next) => {
         const authHeader = req.header('Authorization');
 
         if (!authHeader) {
-            throw new CustomError(401, 'Authorization token is missing');
+            throw new HttpError(401, 'Authorization token is missing');
         }
 
         const token = authHeader.replace('Bearer ', '');
@@ -19,7 +19,7 @@ const checkAuth = async (req, res, next) => {
         const user = await UserModel.findById(decoded._id);
 
         if (!user) {
-            throw new CustomError(404, 'User not found');
+            throw new HttpError(404, 'User not found');
         }
 
         req.user = user;

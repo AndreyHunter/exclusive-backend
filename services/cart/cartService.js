@@ -1,7 +1,7 @@
 import CartModel from '../../models/Cart.js';
-import { CustomError } from '../../utils/index.js';
+import { HttpError } from '../../utils/index.js';
 
-export const addToCartService = async ({ sessionId, userId, productId, quantity }) => {
+export const addToCart = async ({ sessionId, userId, productId, quantity }) => {
     let cart;
 
     if (userId) {
@@ -33,13 +33,108 @@ export const addToCartService = async ({ sessionId, userId, productId, quantity 
     const updatedCart = await cart.save();
 
     if (!updatedCart) {
-        throw new CustomError(400, 'Failed to add product');
+        throw new HttpError(400, 'Failed to add product');
     }
 
     return updatedCart.products;
 };
 
-export const updateCartAfterAuthService = async ({ sessionId, userId }) => {
+export const getUserCart = async ({ sessionId, userId, details = false }) => {
+    let cart;
+
+    if (userId) {
+        cart = await CartModel.findOne({ userId });
+    } else if (sessionId) {
+        cart = await CartModel.findOne({ sessionId, userId: null });
+    } else {
+        throw new HttpError(400, 'Either userId or sessionId must be provided');
+    }
+
+    if (!cart) {
+        return [];
+    }
+
+    if (details) {
+        await cart.populate({
+            path: 'products.productId',
+            select: '-__v -createdAt -updatedAt',
+        });
+
+        const productWithDetails = cart.products.map((product) => ({
+            product: product.productId,
+            quantity: product.quantity,
+        }));
+
+        return productWithDetails;
+    }
+
+    return cart.products;
+};
+
+export const updateUserCartItemsQuantity = async ({ sessionId, userId, products }) => {
+    let cart;
+
+    if (userId) {
+        cart = await CartModel.findOne({ userId });
+    } else if (sessionId) {
+        cart = await CartModel.findOne({ sessionId, userId: null });
+    }
+
+    if (!cart) {
+        throw new HttpError(404, 'Cart was not found');
+    }
+
+    cart.products = products.map((product) => ({
+        productId: product.product._id,
+        quantity: product.quantity,
+    }));
+
+    await cart.populate({ path: 'products.productId', select: '-__v -createdAt -updatedAt' });
+    await cart.save();
+
+    if (!cart) {
+        throw new HttpError(400, 'Cart was not updated');
+    }
+
+    const productWithDetails = cart.products.map((product) => ({
+        product: product.productId,
+        quantity: product.quantity,
+    }));
+
+    return productWithDetails;
+};
+
+export const deleteProductFromCart = async ({ sessionId, userId, productId }) => {
+    let cart;
+
+    if (userId) {
+        cart = await CartModel.findOne({ userId });
+    } else if (sessionId) {
+        cart = await CartModel.findOne({ sessionId, userId: null });
+    }
+
+    if (!cart) {
+        throw new HttpError(404, 'Cart was not found');
+    }
+
+    cart.products = cart.products.filter((product) => product.productId.toString() !== productId);
+
+    await cart.populate({ path: 'products.productId', select: '-__v -createdAt -updatedAt' });
+    await cart.save();
+
+    if (!cart) {
+        throw new HttpError(400, 'Product was not deleted');
+    }
+
+    const productWithDetails = cart.products.map((product) => ({
+        product: product.productId,
+        quantity: product.quantity,
+    }));
+
+    return productWithDetails;
+};
+
+export const updateCartAfterAuth = async ({ sessionId, userId }) => {
     const sessionCart = await CartModel.findOne({ sessionId, userId: null });
     const userCart = await CartModel.findOne({ userId });
 
@@ -70,99 +165,4 @@ export const updateCartAfterAuthService = async ({ sessionId, userId }) => {
 
     const updatedCart = userCart || sessionCart;
     return updatedCart ? updatedCart.products : [];
-};
-
-export const getUserCartService = async ({ sessionId, userId, details = false }) => {
-    let cart;
-
-    if (userId) {
-        cart = await CartModel.findOne({ userId });
-    } else if (sessionId) {
-        cart = await CartModel.findOne({ sessionId, userId: null });
-    } else {
-        throw new CustomError(400, 'Either userId or sessionId must be provided');
-    }
-
-    if (!cart) {
-        return [];
-    }
-
-    if (details) {
-        await cart.populate({
-            path: 'products.productId',
-            select: '-__v -createdAt -updatedAt',
-        });
-
-        const productWithDetails = cart.products.map((product) => ({
-            product: product.productId,
-            quantity: product.quantity,
-        }));
-
-        return productWithDetails;
-    }
-
-    return cart.products;
-};
-
-export const updateUserCartItemsQuantityService = async ({ sessionId, userId, products }) => {
-    let cart;
-
-    if (userId) {
-        cart = await CartModel.findOne({ userId });
-    } else if (sessionId) {
-        cart = await CartModel.findOne({ sessionId, userId: null });
-    }
-
-    if (!cart) {
-        throw new CustomError(404, 'Cart was not found');
-    }
-
-    cart.products = products.map((product) => ({
-        productId: product.product._id,
-        quantity: product.quantity,
-    }));
-
-    await cart.populate({ path: 'products.productId', select: '-__v -createdAt -updatedAt' });
-    await cart.save();
-
-    if (!cart) {
-        throw new CustomError(400, 'Cart was not updated');
-    }
-
-    const productWithDetails = cart.products.map((product) => ({
-        product: product.productId,
-        quantity: product.quantity,
-    }));
-
-    return productWithDetails;
-};
-
-export const deleteProductFromCartService = async ({ sessionId, userId, productId }) => {
-    let cart;
-
-    if (userId) {
-        cart = await CartModel.findOne({ userId });
-    } else if (sessionId) {
-        cart = await CartModel.findOne({ sessionId, userId: null });
-    }
-
-    if (!cart) {
-        throw new CustomError(404, 'Cart was not found');
-    }
-
-    cart.products = cart.products.filter((product) => product.productId.toString() !== productId);
-
-    await cart.populate({ path: 'products.productId', select: '-__v -createdAt -updatedAt' });
-    await cart.save();
-
-    if (!cart) {
-        throw new CustomError(400, 'Product was not deleted');
-    }
-
-    const productWithDetails = cart.products.map((product) => ({
-        product: product.productId,
-        quantity: product.quantity,
-    }));
-
-    return productWithDetails;
 };
